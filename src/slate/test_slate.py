@@ -6,7 +6,7 @@
   http://codespeak.net/py/dist/test/index.html
 """
 
-from slate import PDF
+from .slate import PDF
 
 def pytest_funcarg__doc(request):
     with open('example.pdf', 'rb') as f:

@@ -63,4 +63,4 @@ features, you should take a look at the PDFMiner API[2].
 #You should have received a copy of the GNU General Public License
 #along with slate.  If not, see <http://www.gnu.org/licenses/>.
 
-from slate import PDF
+from .slate import PDF

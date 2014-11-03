@@ -1,6 +1,6 @@
-from StringIO import StringIO
+from io import StringIO
 
-from pdfminer.pdfparser import PDFParser
+from pdfminer.pdfparser import PDFParser, PDFPage
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter as PI
 from pdfminer.pdfdevice import PDFDevice
@@ -10,16 +10,14 @@ try:
 except ImportError:
     from pdfminer.pdfdocument import PDFDocument
 
-from pdfminer.pdfpage import PDFPage
-
-import utils
+from . import utils
 
 __all__ = ['PDF']
 
 class PDFPageInterpreter(PI):
     def process_page(self, page):
         if 1 <= self.debug:
-            print >>stderr, 'Processing page: %r' % page
+            print('Processing page: %r' % page, file=stderr)
         (x0,y0,x1,y1) = page.mediabox
         if page.rotate == 90:
             ctm = (0,-1,1,0, -y0,x1)
