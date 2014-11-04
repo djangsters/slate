@@ -37,7 +37,9 @@ class PDFPageInterpreter(PI):
 class PDF(list):
     def __init__(self, file, password='', just_text=1):
         self.parser = PDFParser(file)
-        self.doc = PDFDocument(self.parser, password)
+        self.doc = PDFDocument()
+        self.doc.set_parser(self.parser)
+        self.doc.initialize(password)
         if self.doc.is_extractable:
             self.resmgr = PDFResourceManager()
             self.device = TextConverter(self.resmgr, outfp=StringIO())
