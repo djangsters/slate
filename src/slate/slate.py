@@ -1,6 +1,6 @@
 from io import StringIO
 
-from pdfminer.pdfparser import PDFParser, PDFPage
+from pdfminer.pdfparser import PDFParser, PDFPage, PSEOF
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter as PI
 from pdfminer.pdfdevice import PDFDevice
@@ -38,14 +38,21 @@ class PDF(list):
     def __init__(self, file, password='', just_text=1):
         self.parser = PDFParser(file)
         self.doc = PDFDocument()
-        self.doc.set_parser(self.parser)
+        try:
+            self.doc.set_parser(self.parser)
+        ## not nice or understood but works
+        except (PSEOF, AttributeError):
+            self.doc.set_parser(self.parser)
         self.doc.initialize(password)
         if self.doc.is_extractable:
             self.resmgr = PDFResourceManager()
             self.device = TextConverter(self.resmgr, outfp=StringIO())
             self.interpreter = PDFPageInterpreter(
                self.resmgr, self.device)
-            for page in PDFPage.create_pages(self.doc):
+            ## probably breaks functionality
+            pageid = 1            
+            attrs = {'Resources': '', 'MediaBox' : ''}
+            for page in PDFPage(self.doc, pageid, attrs):
                 self.append(self.interpreter.process_page(page))
             self.metadata = self.doc.info
         if just_text:
